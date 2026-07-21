@@ -3,42 +3,26 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    -webkit-text-size-adjust: 100%;
-  }
-
+  html { -webkit-text-size-adjust: 100%; }
   body {
     background-color: #FDF0D5;
     color: #000000;
     font-family: 'DM Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-
-  /* Visible keyboard focus everywhere */
-  :focus-visible {
-    outline: 2px solid #586F6B;
-    outline-offset: 2px;
-  }
-
-  /* Respect reducedmotion preference */
+  :focus-visible { outline: 2px solid #586F6B; outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
   }
 }
 
 @layer utilities {
-  .scrollbar-sage::-webkit-scrollbar {
-    width: 6px;
-  }
-  .scrollbar-sage::-webkit-scrollbar-thumb {
-    background-color: #7A9E99;
-    border-radius: 9999px;
-  }
-  .scrollbar-sage::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
+  .scrollbar-none { scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-sage::-webkit-scrollbar { width: 6px; }
+  .scrollbar-sage::-webkit-scrollbar-thumb { background-color: #7A9E99; border-radius: 9999px; }
+  .scrollbar-sage::-webkit-scrollbar-track { background-color: transparent; }
 }
