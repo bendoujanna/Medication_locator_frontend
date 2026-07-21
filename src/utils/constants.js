@@ -1,39 +1,31 @@
 export const INVENTORY_STATUS = {
-  AVAILABLE: 'AVAILABLE',
-  LOW_STOCK: 'LOW_STOCK',
+  AVAILABLE:    'AVAILABLE',
+  LOW_STOCK:    'LOW_STOCK',
   OUT_OF_STOCK: 'OUT_OF_STOCK',
 }
 
 export const INVENTORY_STATUS_LABEL = {
-  [INVENTORY_STATUS.AVAILABLE]: 'In Stock',
-  [INVENTORY_STATUS.LOW_STOCK]: 'Low Stock',
-  [INVENTORY_STATUS.OUT_OF_STOCK]: 'Out of Stock',
+  AVAILABLE:    'In Stock',
+  LOW_STOCK:    'Low Stock',
+  OUT_OF_STOCK: 'Out of Stock',
 }
 
 export const HOLD_STATUS = {
-  PENDING: 'PENDING',
+  PENDING:  'PENDING',
   APPROVED: 'APPROVED',
-  DENIED: 'DENIED',
-  EXPIRED: 'EXPIRED',
+  DENIED:   'DENIED',
+  EXPIRED:  'EXPIRED',
 }
 
 export const STAFF_ROLE = {
-  ADMINISTRATOR: 'ADMINISTRATOR',
+  ADMINISTRATOR:       'ADMINISTRATOR',
   STANDARD_PHARMACIST: 'STANDARD_PHARMACIST',
 }
 
 export const STAFF_ROLE_LABEL = {
-  [STAFF_ROLE.ADMINISTRATOR]: 'Administrator',
-  [STAFF_ROLE.STANDARD_PHARMACIST]: 'Standard Pharmacist',
-}
-
-export const ALERT_TYPE = {
-  LOW_STOCK: 'LOW_STOCK',
-  OUT_OF_STOCK: 'OUT_OF_STOCK',
+  ADMINISTRATOR:       'Administrator',
+  STANDARD_PHARMACIST: 'Standard Pharmacist',
 }
 
 export const HOLD_DURATION_MS = 2 * 60 * 60 * 1000
-
-export const SLOW_RESPONSE_THRESHOLD_MS = 3000
-
-export const MIN_SUPPORTED_WIDTH = 320
+export const POLL_INTERVAL_MS  = 30000
