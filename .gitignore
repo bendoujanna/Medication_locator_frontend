@@ -1,2 +1,6 @@
 .env
 .idea
+.env.local
+*.log
+.DS_Store
+.idea/
