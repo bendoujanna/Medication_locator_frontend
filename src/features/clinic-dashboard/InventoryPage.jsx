@@ -3,6 +3,8 @@ import { Search, Plus } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { getInventory, updateInventory, updateThreshold } from '../../api/inventoryApi'
 import InventoryRow from './components/InventoryRow'
+import AddMedicineModal from './components/AddMedicineModal'
+import Button from '../../components/ui/Button'
 import Spinner from '../../components/ui/Spinner'
 import { useToast } from '../../hooks/useToast'
 
@@ -12,6 +14,9 @@ export default function InventoryPage() {
   const [items,    setItems]    = useState([])
   const [loading,  setLoading]  = useState(true)
   const [search,   setSearch]   = useState('')
+
+  // Modal state for adding new medicine
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
   const load = useCallback(async () => {
     if (!clinicId) return
@@ -55,8 +60,19 @@ export default function InventoryPage() {
               placeholder="Filter medicines…"
               className="h-10 pl-9 pr-3 rounded-sm border-[1.5px] border-border bg-white text-[14px] font-sans text-black placeholder:text-muted focus:outline-none focus:border-sage w-[200px]"/>
           </div>
+
+          {/* Add Medicine Trigger Button */}
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => setIsAddModalOpen(true)}
+            className="flex items-center gap-1.5 h-10"
+          >
+            <Plus size={16}/> Add medicine
+          </Button>
         </div>
       </div>
+
       <p className="text-[13px] font-sans text-muted mb-1">{items.length} medicines tracked</p>
       <div className="h-px bg-border my-4"/>
 
@@ -77,6 +93,14 @@ export default function InventoryPage() {
             ))}
           </div>
       }
+
+      {/* Add Medicine Modal Component */}
+      <AddMedicineModal
+        open={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        clinicId={clinicId}
+        onAdded={load}
+      />
     </div>
   )
 }

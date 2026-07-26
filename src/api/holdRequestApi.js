@@ -31,3 +31,8 @@ export async function processHoldRequest(clinicId, requestId, action) {
   )
   return data
 }
+
+export const getActiveHoldByPhone = async (phone) => {
+  const response = await axiosClient.get(`/hold-requests/active/?phone=${encodeURIComponent(phone)}`);
+  return response.data;
+}

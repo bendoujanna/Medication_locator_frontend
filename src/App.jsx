@@ -35,11 +35,12 @@ export default function App() {
 
                   {/* Client Portal */}
                   <Route element={<ClientLayout />}>
-                    <Route path="/"              element={<SearchPage />} />
-                    <Route path="/map"            element={<MapPage />} />
-                    <Route path="/substitutes"    element={<SubstitutePage />} />
-                    <Route path="/hold/new"       element={<HoldRequestSheet />} />
+                    <Route path="/"                element={<SearchPage />} />
+                    <Route path="/map"             element={<MapPage />} />
+                    <Route path="/substitutes"     element={<SubstitutePage />} />
+                    <Route path="/hold/new"        element={<HoldRequestSheet />} />
                     <Route path="/hold/:requestId" element={<HoldPendingPage />} />
+                    <Route path="/track"           element={<HoldPendingPage />} />
                   </Route>
 
                   {/* Clinic Portal */}

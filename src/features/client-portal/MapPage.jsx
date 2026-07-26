@@ -1,10 +1,9 @@
-import { Suspense, lazy, useState } from 'react'
+import { Suspense, lazy, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Crosshair, Plus, Minus } from 'lucide-react'
 import { useSearch } from '../../hooks/useSearch'
 import { useGeolocation } from '../../hooks/useGeolocation'
 import { getMapPins } from '../../api/searchApi'
-import { useEffect } from 'react'
 import StatusChip from '../../components/ui/StatusChip'
 import Spinner from '../../components/ui/Spinner'
 
@@ -21,18 +20,18 @@ export default function MapPage() {
     if (!query) return
     getMapPins({ query, lat: effectiveCoords.lat, lng: effectiveCoords.lng })
       .then(d => setPins(d.pins)).catch(() => {})
-  }, [query])
+  }, [query, effectiveCoords.lat, effectiveCoords.lng])
 
   return (
-    <div className="relative h-screen w-full">
+    <div className="relative h-full flex-1 w-full bg-cream">
       <Suspense fallback={<div className="h-full w-full flex items-center justify-center bg-sage-tint"><Spinner/></div>}>
         <MapContainer pins={pins} center={[effectiveCoords.lat, effectiveCoords.lng]}
-          zoom={14} height="100vh" onPinClick={setSelected}/>
+          zoom={14} height="100%" onPinClick={setSelected}/>
       </Suspense>
 
       {/* Floating top bar */}
       <div className="absolute top-4 left-4 right-4 z-10">
-        <div className="flex items-center h-12 bg-white rounded-pill shadow-floating px-3 gap-2">
+        <div className="flex items-center h-12 bg-white border-[0.5px] border-border rounded-pill shadow-floating px-3 gap-2">
           <button onClick={() => navigate(-1)} className="w-10 h-10 flex items-center justify-center">
             <ArrowLeft size={18} className="text-black"/>
           </button>
@@ -45,8 +44,18 @@ export default function MapPage() {
         </div>
       </div>
 
+      {/* Map Zoom Controls */}
+      <div className="absolute right-4 bottom-24 flex flex-col gap-2 z-10">
+        <button className="w-10 h-10 flex items-center justify-center bg-cream rounded-pill shadow-floating border border-border">
+          <Plus size={18} className="text-black" />
+        </button>
+        <button className="w-10 h-10 flex items-center justify-center bg-cream rounded-pill shadow-floating border border-border">
+          <Minus size={18} className="text-black" />
+        </button>
+      </div>
+
       {/* Bottom drawer — peek state */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 bg-white rounded-t-[20px] shadow-modal pb-6">
+      <div className="absolute bottom-0 left-0 right-0 z-10 bg-cream rounded-t-[20px] shadow-modal pb-6">
         <div className="flex justify-center pt-3 mb-3">
           <div className="w-9 h-1 bg-border rounded-pill"/>
         </div>
@@ -57,7 +66,7 @@ export default function MapPage() {
         <div className="flex gap-2.5 overflow-x-auto px-5 scrollbar-none">
           {results.slice(0,5).map(r => (
             <div key={r.clinic_id} onClick={() => navigate(`/hold/new?inventory=${r.medication.inventory_id}&clinic=${encodeURIComponent(r.clinic_name)}&drug=${encodeURIComponent(r.medication.brand_name+' '+r.medication.strength)}`)}
-              className={`flex-shrink-0 w-[220px] rounded-md border p-3.5 cursor-pointer
+              className={`flex-shrink-0 w-[220px] bg-white rounded-md border p-3.5 cursor-pointer transition-colors
                 ${selected?.clinic_id === r.clinic_id ? 'border-[1.5px] border-sage' : 'border-[0.5px] border-border'}`}>
               <p className="text-[13px] font-semibold font-sans text-black truncate">{r.clinic_name}</p>
               <p className="text-[11px] font-sans text-sage mt-0.5">{Number(r.distance_km).toFixed(1)} km</p>

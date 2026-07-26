@@ -59,7 +59,8 @@ export default function AddStaffModal({ open, onClose, onCreated }) {
 
   return (
     <Modal open={open} onClose={onClose} variant="center" title="Add staff member" width={440}>
-      <div className="flex flex-col gap-4 mt-1">
+      {/* Scrollable wrapper to prevent the modal from getting cut off */}
+      <div className="max-h-[75vh] overflow-y-auto pr-1 flex flex-col gap-4 mt-1">
         <Input label="Full name" value={form.full_name} onChange={e => set('full_name', e.target.value)}
           placeholder="e.g. Aline Uwase" leftIcon={<User size={15}/>}/>
         <Input label="Username" value={form.username} onChange={e => set('username', e.target.value)}
@@ -116,7 +117,7 @@ export default function AddStaffModal({ open, onClose, onCreated }) {
           </div>
         </div>
 
-        <div className="flex gap-2.5 mt-2">
+        <div className="flex gap-2.5 pt-2 border-t border-border mt-2">
           <Button variant="ghost" size="md" onClick={onClose} className="flex-1">Cancel</Button>
           <Button variant="accent" size="md" onClick={handleSubmit} disabled={saving} className="flex-1">
             {saving ? 'Creating…' : 'Create account'}

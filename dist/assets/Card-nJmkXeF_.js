@@ -1,0 +1,1 @@
+import{w as e}from"./vendor-react-BEUKSk-u.js";var t=e();function n({padding:e=`md`,className:n=``,children:r,...i}){return(0,t.jsx)(`div`,{className:`bg-white border-[0.5px] border-border rounded-md shadow-card ${{compact:`p-3`,md:`p-4`,lg:`p-6`}[e]} ${n}`,...i,children:r})}export{n as t};

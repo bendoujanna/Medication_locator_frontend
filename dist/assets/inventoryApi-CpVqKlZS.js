@@ -1,0 +1,1 @@
+import{_ as e}from"./index-DMFiJbsb.js";async function t(t,n={}){let{data:r}=await e.get(`/clinics/${t}/inventory/`,{params:n});return r}async function n(t,n,r){let{data:i}=await e.patch(`/clinics/${t}/inventory/${n}/`,r);return i}async function r(t,n,r){let{data:i}=await e.patch(`/clinics/${t}/inventory/${n}/threshold/`,{low_stock_threshold:r});return i}export{n,r,t};

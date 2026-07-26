@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from 'react'
+import { useEffect, lazy, Suspense, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import SearchBar from '../../components/search/SearchBar'
@@ -8,7 +8,6 @@ import Spinner from '../../components/ui/Spinner'
 import { useSearch } from '../../hooks/useSearch'
 import { useGeolocation } from '../../hooks/useGeolocation'
 import { getMapPins } from '../../api/searchApi'
-import { useState } from 'react'
 
 const MapContainer = lazy(() => import('../../components/map/MapContainer'))
 
@@ -17,6 +16,14 @@ export default function SearchPage() {
   const { query, setQuery, results, status, runSearch, chips, substitutesAvailable, matchedIngredient } = useSearch()
   const { effectiveCoords } = useGeolocation()
   const [pins, setPins] = useState([])
+
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768)
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     if (status === 'idle') runSearch('Paracetamol', effectiveCoords)
@@ -34,52 +41,68 @@ export default function SearchPage() {
   const handleChip   = (c) => { setQuery(c); runSearch(c, effectiveCoords) }
 
   return (
-    <div className="px-5">
-      <div className="mt-3">
-        <SearchBar value={query} onChange={setQuery} onSubmit={handleSubmit}/>
-      </div>
-      <div className="mt-2.5">
-        <SuggestionChips chips={chips} onSelect={handleChip}/>
-      </div>
+    <div className="md:absolute md:inset-0 md:flex md:w-full md:overflow-hidden md:bg-cream">
 
-      {/* Map thumbnail */}
-      <div className="mt-3.5 rounded-md overflow-hidden border-[0.5px] border-border relative">
-        <Suspense fallback={<div className="h-[175px] bg-sage-tint flex items-center justify-center"><Spinner/></div>}>
-          <MapContainer pins={pins} height="175px"/>
-        </Suspense>
-        <button onClick={() => navigate('/map')}
-          className="absolute bottom-2 right-2 h-6 px-2.5 rounded-pill bg-white shadow-floating flex items-center text-[11px] font-medium font-sans text-sage z-10">
-          Expand map <ChevronRight size={12} className="ml-0.5"/>
-        </button>
-      </div>
+      <div className="px-5 md:w-[400px] lg:w-[450px] md:flex-shrink-0 md:h-full md:overflow-y-auto md:border-r md:border-border md:z-10 flex flex-col md:bg-cream">
+        <div className="mt-3 md:mt-5">
+          <SearchBar value={query} onChange={setQuery} onSubmit={handleSubmit}/>
+        </div>
+        <div className="mt-2.5">
+          <SuggestionChips chips={chips} onSelect={handleChip}/>
+        </div>
 
-      <div className="flex items-center justify-between mt-[18px]">
-        <span className="text-[13px] font-semibold font-sans text-sage uppercase tracking-wide">Clinics nearby</span>
-        <span className="text-[12px] font-sans text-muted">{status==='success'?`${results.length} results`:''}</span>
-      </div>
-
-      <div className="mt-2.5 flex flex-col gap-2 pb-2">
-        {status === 'loading' && <div className="flex justify-center py-10"><Spinner/></div>}
-        {status === 'error'   && <ErrorState onRetry={() => runSearch(query, effectiveCoords)}/>}
-        {(status === 'empty' || (status === 'success' && results.length === 0)) && <NoResultsState query={query}/>}
-        {status === 'success' && results.map(r => (
-          <ClinicResultCard
-            key={r.clinic_id + r.medication.inventory_id}
-            clinicName={r.clinic_name}
-            address={r.address}
-            distanceKm={r.distance_km}
-            etaLabel={`~${Math.max(3, Math.round((r.distance_km/25)*60))} min by moto`}
-            status={r.traffic_light_status}
-            onHoldClick={() => navigate(`/hold/new?inventory=${r.medication.inventory_id}&clinic=${encodeURIComponent(r.clinic_name)}&drug=${encodeURIComponent(r.medication.brand_name+' '+r.medication.strength)}`)}
-          />
-        ))}
-        {substitutesAvailable && matchedIngredient && (
-          <button onClick={() => navigate(`/substitutes?ingredient=${matchedIngredient.ingredient_id}&name=${encodeURIComponent(matchedIngredient.name)}`)}
-            className="mt-1 text-center text-[13px] font-semibold font-sans text-rose underline">
-            See substitute medicines available nearby →
-          </button>
+        {!isDesktop && (
+          <div className="mt-3.5 rounded-md overflow-hidden border-[0.5px] border-border relative">
+            <Suspense fallback={<div className="h-[175px] bg-sage-tint flex items-center justify-center"><Spinner/></div>}>
+              <MapContainer pins={pins} height="175px"/>
+            </Suspense>
+            <button onClick={() => navigate('/map')}
+              className="absolute bottom-2 right-2 h-6 px-2.5 rounded-pill bg-white shadow-floating flex items-center text-[11px] font-medium font-sans text-sage z-10">
+              Expand map <ChevronRight size={12} className="ml-0.5"/>
+            </button>
+          </div>
         )}
+
+        <div className="flex items-center justify-between mt-[18px] md:mt-6">
+          <span className="text-[13px] font-semibold font-sans text-sage uppercase tracking-wide">Clinics nearby</span>
+          <span className="text-[12px] font-sans text-muted">{status==='success'?`${results.length} results`:''}</span>
+        </div>
+
+        <div className="mt-2.5 flex flex-col gap-2 pb-2 md:pb-6">
+          {status === 'loading' && <div className="flex justify-center py-10"><Spinner/></div>}
+          {status === 'error'   && <ErrorState onRetry={() => runSearch(query, effectiveCoords)}/>}
+          {(status === 'empty' || (status === 'success' && results.length === 0)) && <NoResultsState query={query}/>}
+          {status === 'success' && results.map(r => (
+            <ClinicResultCard
+              key={r.clinic_id + r.medication.inventory_id}
+              clinicName={r.clinic_name}
+              medicationName={`${r.medication.brand_name} ${r.medication.strength}`}
+              activeIngredient={r.medication.ingredient_name}
+              query={query}
+              address={r.address}
+              distanceKm={r.distance_km}
+              etaLabel={`~${Math.max(3, Math.round((r.distance_km/25)*60))} min by moto`}
+              status={r.traffic_light_status}
+              onHoldClick={() => navigate(`/hold/new?inventory=${r.medication.inventory_id}&clinic=${encodeURIComponent(r.clinic_name)}&drug=${encodeURIComponent(r.medication.brand_name+' '+r.medication.strength)}`)}
+            />
+          ))}
+          {substitutesAvailable && matchedIngredient && (
+            <button onClick={() => navigate(`/substitutes?ingredient=${matchedIngredient.ingredient_id}&name=${encodeURIComponent(matchedIngredient.name)}`)}
+              className="mt-1 text-center text-[13px] font-semibold font-sans text-rose underline">
+              See substitute medicines available nearby →
+            </button>
+          )}
+        </div>
       </div>
+
+      {isDesktop && (
+        <div className="hidden md:block flex-1 relative h-full bg-sage-tint/20">
+          <Suspense fallback={<div className="h-full w-full flex items-center justify-center"><Spinner/></div>}>
+            <MapContainer pins={pins} height="100%"/>
+          </Suspense>
+        </div>
+      )}
+
     </div>
   )
 }
