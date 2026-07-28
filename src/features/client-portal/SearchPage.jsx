@@ -77,7 +77,7 @@ export default function SearchPage() {
               key={r.clinic_id + r.medication.inventory_id}
               clinicName={r.clinic_name}
               medicationName={`${r.medication.brand_name} ${r.medication.strength}`}
-              activeIngredient={r.medication.ingredient_name}
+              activeIngredient={r.medication.active_ingredient}
               query={query}
               address={r.address}
               distanceKm={r.distance_km}

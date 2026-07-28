@@ -3,7 +3,7 @@ import { searchMedications } from '../api/searchApi'
 
 export const SearchContext = createContext(null)
 
-const CHIPS = ['Paracetamol', 'Amoxicillin', 'ORS Sachets', 'Ibuprofen']
+const CHIPS = ['Paracetamol', 'Amoxicillin', 'Ibuprofen']
 
 export function SearchProvider({ children }) {
   const [query,               setQuery]               = useState('')
