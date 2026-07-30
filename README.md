@@ -404,11 +404,6 @@ the Vercel project settings under Environment Variables.
 
 **Important:** Because this is a single-page application using client-side routing,
 you must configure your hosting provider to redirect all requests to `index.html`.
-On Netlify, create a `_redirects` file in the `public/` directory with the content:
-
-```
-/*    /index.html    200
-```
 
 On Vercel, this is handled automatically.
 
